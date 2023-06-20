@@ -1,6 +1,5 @@
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { Basket } from "../models/basket";
-import { error } from "console";
 
 interface StoreContextValue {
     basket: Basket | null;
