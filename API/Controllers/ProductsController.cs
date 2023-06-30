@@ -1,11 +1,9 @@
-using System.Text.Json;
 using API.Data;
 using API.Entities;
 using API.Extensions;
 using API.RequestHelper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 
 namespace API.Controllers
 {
