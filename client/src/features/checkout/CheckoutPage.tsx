@@ -51,7 +51,7 @@ export default function CheckoutPage() {
 
     const handleNext = async (data: FieldValues) => {
         const {nameOnCard, saveAddress, ...shippingAddress} = data;
-        if (activeStep == steps.length - 1) {
+        if (activeStep === steps.length - 1) {
             setLoading(true);
             try {
                 const orderNumber = await agent.Orders.create({saveAddress, shippingAddress});
