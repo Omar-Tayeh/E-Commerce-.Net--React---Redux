@@ -23,6 +23,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: "{{desfaultContext}}:/API"
+          context: "{{desfaultContext}}:API/Dockerfile"
           push: true
           tags: omartayeh/omarstore:latest
