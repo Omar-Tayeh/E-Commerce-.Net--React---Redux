@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { User } from "../../app/models/user";
 import { FieldValues } from "react-hook-form";
-import agent from "../../app/api/agent";
-import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
+import agent from "../../app/api/agent";
+import { User } from "../../app/models/user";
+import { router } from "../../app/router/Routes";
 import { setBasket } from "../basket/basketSlice";
 
 interface AccountState {
-    user: User | null;
+    user: User | null
 }
 
 const initialState: AccountState = {
@@ -24,7 +24,7 @@ export const signInUser = createAsyncThunk<User, FieldValues>(
             localStorage.setItem('user', JSON.stringify(user));
             return user;
         } catch (error: any) {
-            return thunkAPI.rejectWithValue({error: error.data});
+            return thunkAPI.rejectWithValue({error: error.data})
         }
     }
 )
@@ -39,8 +39,8 @@ export const fetchCurrentUser = createAsyncThunk<User>(
             if (basket) thunkAPI.dispatch(setBasket(basket));
             localStorage.setItem('user', JSON.stringify(user));
             return user;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue({error: error.data});
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error);
         }
     },
     {
@@ -60,23 +60,26 @@ export const accountSlice = createSlice({
             router.navigate('/');
         },
         setUser: (state, action) => {
-            state.user = action.payload;
+            let claims = JSON.parse(atob(action.payload.token.split('.')[1])); 
+            let roles = claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+            state.user = {...action.payload, roles: typeof(roles) === 'string' ? [roles] : roles}; 
         }
     },
     extraReducers: (builder => {
         builder.addCase(fetchCurrentUser.rejected, (state) => {
             state.user = null;
             localStorage.removeItem('user');
-            toast.error('Session expired, Please login again');
+            toast.error('Session expired - please login again');
             router.navigate('/');
-        });
-        builder.addCase(signInUser.rejected, (state, action) => {
-            throw action.payload;
-        });
+        })
         builder.addMatcher(isAnyOf(signInUser.fulfilled, fetchCurrentUser.fulfilled), (state, action) => {
-            state.user = action.payload;
+            let claims = JSON.parse(atob(action.payload.token.split('.')[1])); 
+            let roles = claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+            state.user = {...action.payload, roles: typeof(roles) === 'string' ? [roles] : roles};  
         });
-        
+        builder.addMatcher(isAnyOf(signInUser.rejected), (state, action) => {
+            throw action.payload;
+        })
     })
 })
 
