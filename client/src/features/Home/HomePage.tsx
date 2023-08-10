@@ -25,7 +25,7 @@ export default function HomePage() {
             </Slider>
             <Box display='flex' justifyContent='center' sx={{ p: 4 }} >
                 <Typography variant='h1'>
-                    Welcome to the store!
+                    Welcome to the store! please feel free to test this store.
                 </Typography>
             </Box>
         </>
